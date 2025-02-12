@@ -89,7 +89,8 @@ const Login: NextPageWithLayout<
           password,
           csrfToken,
           redirect: true,
-          callbackUrl: '/dashboard'
+          callbackUrl: callbackUrl ? callbackUrl : '/dashboard',
+          recaptchaToken,
         });
 
         formik.resetForm();

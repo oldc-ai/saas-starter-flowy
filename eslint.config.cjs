@@ -43,6 +43,9 @@ module.exports = [{
     },
     rules: {
         "@typescript-eslint/no-explicit-any": "off",
+        "i18next/no-literal-string": "off",
+        "i18next/valid-key": "off",
+        "i18next/no-literal-string-in-jsx": "off"
     }
 }, {
     files: ["**/*.js"],

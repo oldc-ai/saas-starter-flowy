@@ -1,8 +1,7 @@
-import { useTranslation } from 'next-i18next';
 import Link from 'next/link';
 
 const HeroSection = () => {
-  const { t } = useTranslation('common');
+  // const { t } = useTranslation('common');
   return (
     <div className="hero py-52">
       <div className="hero-content text-center">
