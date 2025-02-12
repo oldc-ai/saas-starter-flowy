@@ -1,14 +1,22 @@
 [
   {
-    "question": "What is BoxyHQ?",
-    "answer": "Enterprise readiness for B2B SaaS, straight out of the box."
+    "question": "What is Flowy.ai?",
+    "answer": "Flowy.ai is an AI-powered platform that helps small food business owners automatically standardize data from purchase receipts and invoices, track item-level food costs, and sync with accounting systems like QuickBooks and Restaurant365."
   },
   {
-    "question": "What BoxyHQ offers?",
-    "answer": "At BoxyHQ we enable you to add plug-and-play enterprise-ready features to your SaaS product. Show enterprise customers and InfoSec teams you are ready to pass their processes with flying colors. We are open-source and free!"
+    "question": "How does Flowy.ai work?",
+    "answer": "Simply upload your receipts or invoices (PDF or photo) through our mobile web app. Our AI automatically extracts and standardizes the data in 30 seconds, categorizes items, and prepares it for export to your preferred format or accounting system."
   },
   {
-    "question": "Is BoxyHQ offers developer security tools?",
-    "answer": "We have curated a list of awesome open-source developer security tools.It includes security principles and controls relevant to popular compliance certifications (like ISO27001, SOC2, MVSP, etc.)"
+    "question": "Is there a free trial?",
+    "answer": "Yes! You can try Flowy.ai with up to 20 uploads for free. This allows you to experience how our AI processes and reformats your data based on your requirements."
+  },
+  {
+    "question": "What types of businesses can benefit from Flowy.ai?",
+    "answer": "Flowy.ai is perfect for small food businesses including coffee shops, cafes, family-style restaurants, catering businesses, and food trucks that source ingredients from multiple retailers and need to track costs efficiently."
+  },
+  {
+    "question": "How accurate is the data extraction?",
+    "answer": "Our AI system achieves 97% accuracy in data extraction and categorization. This high accuracy rate helps minimize human errors and saves time compared to manual data entry."
   }
 ]

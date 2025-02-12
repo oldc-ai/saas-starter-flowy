@@ -13,11 +13,10 @@ const PricingSection = () => {
           {t('pricing')}
         </h2>
         <p className="text-center text-xl">
-          Lorem Ipsum is simply dummy text of the printing and typesetting
-          industry.
+          Start with a free trial of 20 uploads. No credit card required.
         </p>
         <div className="flex items-center justify-center">
-          <div className="grid grid-cols-1 gap-3 md:grid-cols-3">
+          <div className="w-full max-w-md">
             {plans.map((plan, index) => {
               return (
                 <Card
@@ -25,10 +24,10 @@ const PricingSection = () => {
                   className="rounded-md dark:border-gray-200 border border-gray-300"
                 >
                   <Card.Body>
-                    <Card.Title tag="h2">
-                      {plan.currency} {plan.amount} / {plan.duration}
+                    <Card.Title tag="h2" className="text-center">
+                      {plan.currency}{plan.amount} / {plan.duration}
                     </Card.Title>
-                    <p>{plan.description}</p>
+                    <p className="text-center">{plan.description}</p>
                     <div className="mt-5">
                       <ul className="flex flex-col space-y-2">
                         {plan.benefits.map(
@@ -53,7 +52,7 @@ const PricingSection = () => {
                       className="md:w-full w-3/4 rounded-md"
                       size="md"
                     >
-                      {t('buy-now')}
+                      Start Free Trial
                     </Button>
                   </Card.Actions>
                 </Card>
