@@ -44,10 +44,11 @@ const Login: NextPageWithLayout<
   const [isPasswordVisible, setIsPasswordVisible] = useState<boolean>(false);
   const recaptchaRef = useRef<ReCAPTCHA>(null);
 
-  const { error, success, token } = router.query as {
+  const { error, success, token, callbackUrl } = router.query as {
     error: string;
     success: string;
     token: string;
+    callbackUrl: string;
   };
 
   const handlePasswordVisibility = () => {
@@ -66,7 +67,7 @@ const Login: NextPageWithLayout<
 
   const redirectUrl = token
     ? `/invitations/${token}`
-    : env.redirectIfAuthenticated;
+    : '/dashboard';
 
   const formik = useFormik({
     initialValues: {
@@ -82,21 +83,38 @@ const Login: NextPageWithLayout<
 
       setMessage({ text: null, status: null });
 
-      const response = await signIn('credentials', {
-        email,
-        password,
-        csrfToken,
-        redirect: false,
-        callbackUrl: redirectUrl,
-        recaptchaToken,
-      });
+      try {
+        const response = await signIn('credentials', {
+          email,
+          password,
+          csrfToken,
+          redirect: true,
+          callbackUrl: '/dashboard'
+        });
 
-      formik.resetForm();
-      recaptchaRef.current?.reset();
+        formik.resetForm();
+        recaptchaRef.current?.reset();
 
-      if (response && !response.ok) {
-        setMessage({ text: response.error, status: 'error' });
-        return;
+        if (!response) {
+          console.error('No response from signIn');
+          setMessage({ text: 'Authentication failed - no response', status: 'error' });
+          return;
+        }
+
+        if (!response.ok) {
+          console.error('Sign in error:', response);
+          setMessage({ 
+            text: response.error || 'Invalid credentials', 
+            status: 'error' 
+          });
+          return;
+        }
+      } catch (error) {
+        console.error('Sign in error:', error);
+        setMessage({ 
+          text: error instanceof Error ? error.message : 'Authentication failed', 
+          status: 'error' 
+        });
       }
     },
   });
