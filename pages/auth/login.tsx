@@ -96,19 +96,12 @@ const Login: NextPageWithLayout<
         formik.resetForm();
         recaptchaRef.current?.reset();
 
-        if (!response) {
-          console.error('No response from signIn');
-          setMessage({ text: 'Authentication failed - no response', status: 'error' });
-          return;
-        }
-
-        if (!response.ok) {
+        if (response && !response.ok) {
           console.error('Sign in error:', response);
           setMessage({ 
             text: response.error || 'Invalid credentials', 
             status: 'error' 
           });
-          return;
         }
       } catch (error) {
         console.error('Sign in error:', error);
