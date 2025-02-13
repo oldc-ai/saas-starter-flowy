@@ -21,9 +21,7 @@ const TeamNavigation = ({ slug, activePathname }: NavigationItemsProps) => {
       name: t('settings'),
       href: `/teams/${slug}/settings`,
       icon: Cog6ToothIcon,
-      active:
-        activePathname?.startsWith(`/teams/${slug}`) &&
-        !activePathname.includes('products'),
+      active: activePathname === `/teams/${slug}/settings`,
     },
   ];
 
