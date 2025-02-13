@@ -82,6 +82,7 @@ model Team {
   members         TeamMember[]
   invitations     Invitation[]
   apiKeys         ApiKey[]
+  inventoryItems  InventoryItem[]
 
   @@index([billingId])
 }
@@ -217,4 +218,21 @@ model jackson_ttl {
 
   @@index([expiresAt], map: "_jackson_ttl_expires_at")
   @@ignore
+}
+
+model InventoryItem {
+  id        String   @id @default(uuid())
+  name      String
+  value     Float
+  unitType  String
+  teamId    String
+  updatedBy String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  team   Team @relation(fields: [teamId], references: [id], onDelete: Cascade)
+
+  @@unique([teamId, name])
+  @@index([teamId])
+  @@index([updatedBy])
 }
