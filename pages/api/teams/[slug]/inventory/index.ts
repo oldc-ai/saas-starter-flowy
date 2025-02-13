@@ -48,7 +48,7 @@ export default async function handler(
           console.log('Created item:', newItem); // Debug log
           return res.status(201).json(newItem);
         } catch (error) {
-          if (error.code === 'P2002') {
+          if (error instanceof Error && error.message === 'P2002') {
             return res.status(400).json({ 
               error: 'An item with this name already exists' 
             });
@@ -92,7 +92,7 @@ export default async function handler(
           console.log('Updated item:', updatedItem); // Debug log
           return res.status(200).json(updatedItem);
         } catch (error) {
-          if (error.code === 'P2002') {
+          if (error instanceof Error && error.message === 'P2002') {
             return res.status(400).json({ 
               error: 'An item with this name already exists' 
             });
