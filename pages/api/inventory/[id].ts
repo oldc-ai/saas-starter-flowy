@@ -7,7 +7,7 @@ export default async function handler(
   res: NextApiResponse
 ) {
   try {
-    const { team, user } = await throwIfNoTeamAccess(req, res);
+    const { team } = await throwIfNoTeamAccess(req, res);
     const { id } = req.query;
 
     if (req.method !== 'DELETE') {

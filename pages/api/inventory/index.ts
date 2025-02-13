@@ -10,7 +10,7 @@ export default async function handler(
     const { team, user } = await throwIfNoTeamAccess(req, res);
 
     switch (req.method) {
-      case 'GET':
+      case 'GET': {
         const items = await prisma.inventoryItem.findMany({
           where: {
             teamId: team.id,
@@ -20,8 +20,9 @@ export default async function handler(
           },
         });
         return res.status(200).json(items);
+      }
 
-      case 'POST':
+      case 'POST': {
         const { name, value, unitType } = req.body;
         const newItem = await prisma.inventoryItem.create({
           data: {
@@ -32,10 +33,10 @@ export default async function handler(
             updatedBy: user.id,
           },
         });
-
         return res.status(201).json(newItem);
+      }
 
-      case 'PUT':
+      case 'PUT': {
         const { id, name: updateName, value: updateValue, unitType: updateUnitType } = req.body;
         
         const existingItem = await prisma.inventoryItem.findUnique({
@@ -55,8 +56,8 @@ export default async function handler(
             updatedBy: user.id,
           },
         });
-
         return res.status(200).json(updatedItem);
+      }
 
       default:
         res.setHeader('Allow', ['GET', 'POST', 'PUT']);

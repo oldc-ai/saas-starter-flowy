@@ -4,7 +4,7 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { useState, memo } from 'react';
 import { Button } from 'react-daisyui';
 import toast from 'react-hot-toast';
-import useSWR, { mutate } from 'swr';
+import useSWR from 'swr';
 import { Table } from '@/components/shared/table/Table';
 import { WithLoadingAndError } from '@/components/shared';
 import { defaultHeaders } from '@/lib/common';

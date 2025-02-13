@@ -11,7 +11,7 @@ export default async function handler(
     console.log('Team ID:', team.id); // Debug log
 
     switch (req.method) {
-      case 'GET':
+      case 'GET': {
         console.log('GET request received for team:', team.id);
         const items = await prisma.inventoryItem.findMany({
           where: {
@@ -23,8 +23,9 @@ export default async function handler(
         });
         console.log('Query executed, found items:', JSON.stringify(items, null, 2)); // Debug log
         return res.status(200).json(items);
+      }
 
-      case 'POST':
+      case 'POST': {
         const { name, value, unitType } = req.body;
         
         // Validate required fields
@@ -54,8 +55,9 @@ export default async function handler(
           }
           throw error;
         }
+      }
 
-      case 'PUT':
+      case 'PUT': {
         const { id, name: updateName, value: updateValue, unitType: updateUnitType } = req.body;
         
         if (!id || !updateName || updateValue === undefined || !updateUnitType) {
@@ -97,6 +99,7 @@ export default async function handler(
           }
           throw error;
         }
+      }
 
       default:
         res.setHeader('Allow', ['GET', 'POST', 'PUT']);
