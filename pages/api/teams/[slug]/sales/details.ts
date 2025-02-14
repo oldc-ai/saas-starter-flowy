@@ -1,8 +1,6 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import { prisma } from '@/lib/prisma';
 import { ApiError } from '@/lib/errors';
-import { recordMetric } from '@/lib/metrics';
-import { sendAudit } from '@/lib/retraced';
 import { getCurrentUserWithTeam, throwIfNoTeamAccess } from 'models/team';
 import { throwIfNotAllowed } from 'models/user';
 
@@ -81,15 +79,6 @@ const handleGET = async (req: NextApiRequest, res: NextApiResponse) => {
       total: sale.total,
       paymentType: sale.paymentType,
     }));
-
-    sendAudit({
-      action: 'sales.details',
-      crud: 'r',
-      user,
-      team: user.team,
-    });
-
-    recordMetric('sales.details.fetched');
 
     return res.status(200).json(formattedSales);
   } catch (error) {
