@@ -23,94 +23,121 @@ interface TeamTabProps {
 const TeamTab = ({ activeTab, team, heading, teamFeatures }: TeamTabProps) => {
   const { canAccess } = useCanAccess();
 
-  const navigations = [
-    {
-      name: 'Settings',
-      href: `/teams/${team.slug}/settings`,
-      active: activeTab === 'settings',
-      icon: Cog6ToothIcon,
-    },
-  ];
+  let navigations = [];
 
-  if (canAccess('team_member', ['create', 'update', 'read', 'delete'])) {
-    navigations.push({
-      name: 'Members',
-      href: `/teams/${team.slug}/members`,
-      active: activeTab === 'members',
-      icon: UserPlusIcon,
-    });
-  }
+  // Main navigation items
+  if (activeTab === 'inventory' || activeTab === 'sales' || activeTab === 'products') {
+    navigations = [
+      {
+        name: 'Inventory',
+        href: `/teams/${team.slug}/inventory`,
+        active: activeTab === 'inventory',
+        icon: DocumentMagnifyingGlassIcon,
+      },
+      {
+        name: 'Sales',
+        href: `/teams/${team.slug}/sales`,
+        active: activeTab === 'sales',
+        icon: BanknotesIcon,
+      },
+      {
+        name: 'Products',
+        href: `/teams/${team.slug}/products`,
+        active: activeTab === 'products',
+        icon: DocumentMagnifyingGlassIcon,
+      },
+    ];
+  } else {
+    // Settings navigation items
+    navigations = [
+      {
+        name: 'Settings',
+        href: `/teams/${team.slug}/settings`,
+        active: activeTab === 'settings',
+        icon: Cog6ToothIcon,
+      },
+    ];
 
-  if (
-    teamFeatures.sso &&
-    canAccess('team_sso', ['create', 'update', 'read', 'delete'])
-  ) {
-    navigations.push({
-      name: 'Single Sign-On',
-      href: `/teams/${team.slug}/sso`,
-      active: activeTab === 'sso',
-      icon: ShieldExclamationIcon,
-    });
-  }
+    if (canAccess('team_member', ['create', 'update', 'read', 'delete'])) {
+      navigations.push({
+        name: 'Members',
+        href: `/teams/${team.slug}/members`,
+        active: activeTab === 'members',
+        icon: UserPlusIcon,
+      });
+    }
 
-  if (
-    teamFeatures.dsync &&
-    canAccess('team_dsync', ['create', 'update', 'read', 'delete'])
-  ) {
-    navigations.push({
-      name: 'Directory Sync',
-      href: `/teams/${team.slug}/directory-sync`,
-      active: activeTab === 'directory-sync',
-      icon: UserPlusIcon,
-    });
-  }
+    if (
+      teamFeatures.sso &&
+      canAccess('team_sso', ['create', 'update', 'read', 'delete'])
+    ) {
+      navigations.push({
+        name: 'Single Sign-On',
+        href: `/teams/${team.slug}/sso`,
+        active: activeTab === 'sso',
+        icon: ShieldExclamationIcon,
+      });
+    }
 
-  if (
-    teamFeatures.auditLog &&
-    canAccess('team_audit_log', ['create', 'update', 'read', 'delete'])
-  ) {
-    navigations.push({
-      name: 'Audit Logs',
-      href: `/teams/${team.slug}/audit-logs`,
-      active: activeTab === 'audit-logs',
-      icon: DocumentMagnifyingGlassIcon,
-    });
-  }
+    if (
+      teamFeatures.dsync &&
+      canAccess('team_dsync', ['create', 'update', 'read', 'delete'])
+    ) {
+      navigations.push({
+        name: 'Directory Sync',
+        href: `/teams/${team.slug}/directory-sync`,
+        active: activeTab === 'directory-sync',
+        icon: UserPlusIcon,
+      });
+    }
 
-  if (
-    teamFeatures.payments &&
-    canAccess('team_payments', ['create', 'update', 'read', 'delete'])
-  ) {
-    navigations.push({
-      name: 'Billing',
-      href: `/teams/${team.slug}/billing`,
-      active: activeTab === 'payments',
-      icon: BanknotesIcon,
-    });
-  }
+    if (
+      teamFeatures.auditLog &&
+      canAccess('team_audit_log', ['create', 'update', 'read', 'delete'])
+    ) {
+      navigations.push({
+        name: 'Audit Logs',
+        href: `/teams/${team.slug}/audit-logs`,
+        active: activeTab === 'audit-logs',
+        icon: DocumentMagnifyingGlassIcon,
+      });
+    }
 
-  if (
-    teamFeatures.webhook &&
-    canAccess('team_webhook', ['create', 'update', 'read', 'delete'])
-  ) {
-    navigations.push({
-      name: 'Webhooks',
-      href: `/teams/${team.slug}/webhooks`,
-      active: activeTab === 'webhooks',
-      icon: PaperAirplaneIcon,
-    });
-  }
+    if (
+      teamFeatures.payments &&
+      canAccess('team_payments', ['create', 'update', 'read', 'delete'])
+    ) {
+      navigations.push({
+        name: 'Billing',
+        href: `/teams/${team.slug}/billing`,
+        active: activeTab === 'payments',
+        icon: BanknotesIcon,
+      });
+    }
 
-  if (
-    teamFeatures.apiKey &&
-    canAccess('team_api_key', ['create', 'update', 'read', 'delete'])
-  ) {
-    navigations.push({
-      name: 'API Keys',
-      href: `/teams/${team.slug}/api-keys`,
-      active: activeTab === 'api-keys',
-      icon: KeyIcon,
-    });
+    if (
+      teamFeatures.webhook &&
+      canAccess('team_webhook', ['create', 'update', 'read', 'delete'])
+    ) {
+      navigations.push({
+        name: 'Webhooks',
+        href: `/teams/${team.slug}/webhooks`,
+        active: activeTab === 'webhooks',
+        icon: PaperAirplaneIcon,
+      });
+    }
+
+    if (
+      teamFeatures.apiKey &&
+      canAccess('team_api_key', ['create', 'update', 'read', 'delete'])
+    ) {
+      navigations.push({
+        name: 'API Keys',
+        href: `/teams/${team.slug}/api-keys`,
+        active: activeTab === 'api-keys',
+        icon: KeyIcon,
+      });
+    }
   }
 
   return (

@@ -83,6 +83,7 @@ model Team {
   invitations     Invitation[]
   apiKeys         ApiKey[]
   inventoryItems  InventoryItem[]
+  sales           Sale[]
 
   @@index([billingId])
 }
@@ -235,4 +236,40 @@ model InventoryItem {
   @@unique([teamId, name])
   @@index([teamId])
   @@index([updatedBy])
+}
+
+model Sale {
+  id          String      @id @default(uuid())
+  teamId      String
+  date        DateTime    @default(now())
+  total       Float
+  paymentType String      // e.g., CASH, CREDIT_CARD, SQUARE, etc.
+  status      String      // e.g., COMPLETED, REFUNDED, etc.
+  posProvider String?     // e.g., SQUARE, CLOVER, etc.
+  posOrderId  String?     // Reference ID from the POS system
+  items       SaleItem[]
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+
+  team        Team        @relation(fields: [teamId], references: [id], onDelete: Cascade)
+
+  @@index([teamId])
+  @@index([date])
+}
+
+model SaleItem {
+  id          String   @id @default(uuid())
+  saleId      String
+  name        String
+  quantity    Int
+  unitPrice   Float
+  totalPrice  Float
+  category    String?  // e.g., FOOD, BEVERAGE, etc.
+  notes       String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  sale        Sale     @relation(fields: [saleId], references: [id], onDelete: Cascade)
+
+  @@index([saleId])
 }
