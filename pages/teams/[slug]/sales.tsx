@@ -2,7 +2,6 @@ import { GetServerSidePropsContext } from 'next';
 import { useTranslation } from 'next-i18next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { useState, useEffect } from 'react';
-import { useRouter } from 'next/router';
 import { format } from 'date-fns';
 import { Button } from 'react-daisyui';
 
@@ -45,7 +44,7 @@ const SalesPage = () => {
 
     const fetchDailySales = async () => {
       try {
-        const response = await fetch(`/api/teams/${team?.slug}/sales`);
+        const response = await fetch(`/api/teams/${team.slug}/sales`);
         if (response.ok) {
           const data = await response.json();
           setDailySales(data);
@@ -58,7 +57,7 @@ const SalesPage = () => {
     };
 
     fetchDailySales();
-  }, [team?.slug]);
+  }, [team]);
 
   const handleRowClick = async (date: string) => {
     if (!team) return;
