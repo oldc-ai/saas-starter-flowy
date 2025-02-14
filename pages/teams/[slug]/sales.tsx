@@ -7,13 +7,8 @@ import { format } from 'date-fns';
 import { Button } from 'react-daisyui';
 
 import { Error, Loading } from '@/components/shared';
-import { Team } from '@prisma/client';
 import useTeam from 'hooks/useTeam';
 import Modal from '@/components/shared/Modal';
-
-interface Props {
-  team: Team;
-}
 
 interface DailySale {
   date: string;
@@ -37,7 +32,6 @@ interface SaleDetail {
 
 const SalesPage = () => {
   const { t } = useTranslation('common');
-  const router = useRouter();
   const { isLoading: isLoadingTeam, isError, team } = useTeam();
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
   const [showDetailsModal, setShowDetailsModal] = useState(false);
