@@ -46,7 +46,7 @@ export default async function handler(
       const fileName = `${team.id}/${Date.now()}-${file.originalFilename}`;
 
       // Explicitly set authorization header with service role key
-      const { error: uploadError, data } = await supabase.storage
+      const { error: uploadError } = await supabase.storage
         .from('receipts')
         .upload(fileName, fileContent, {
           contentType: file.mimetype || undefined,
@@ -63,7 +63,6 @@ export default async function handler(
         .from('receipts')
         .getPublicUrl(fileName);
 
-      // @ts-ignore - Prisma will handle this at runtime
       const receipt = await prisma.receiptUpload.create({
         data: {
           teamId: team.id,
