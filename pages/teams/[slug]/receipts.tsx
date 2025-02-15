@@ -238,12 +238,13 @@ const ReceiptUploads = () => {
                   title={selectedReceipt.fileName}
                 />
               ) : (
-                <Image
-                  src={selectedReceipt.fileUrl}
-                  alt={selectedReceipt.fileName}
-                  fill
-                  className="object-contain"
-                />
+                <div className="relative w-full h-full">
+                  <img
+                    src={selectedReceipt.fileUrl}
+                    alt={selectedReceipt.fileName}
+                    className="object-contain w-full h-full"
+                  />
+                </div>
               )}
             </div>
           </div>
