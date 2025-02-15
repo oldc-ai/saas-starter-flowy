@@ -40,6 +40,7 @@ function MyApp({ Component, pageProps }: AppPropsWithLayout) {
     <>
       <Head>
         <title>{app.name}</title>
+        <link rel="icon" href="/vercel.svg" />
       </Head>
       <SessionProvider session={session}>
         <Toaster toastOptions={{ duration: 4000 }} />
