@@ -1,4 +1,4 @@
-import { Cog6ToothIcon, CodeBracketIcon, ChartBarIcon } from '@heroicons/react/24/outline';
+import { Cog6ToothIcon, CodeBracketIcon, ChartBarIcon, DocumentTextIcon } from '@heroicons/react/24/outline';
 import { useTranslation } from 'next-i18next';
 import NavigationItems from './NavigationItems';
 import { NavigationProps, MenuItem } from './NavigationItems';
@@ -22,6 +22,12 @@ const TeamNavigation = ({ slug, activePathname }: NavigationItemsProps) => {
       href: `/teams/${slug}/sales`,
       icon: ChartBarIcon,
       active: activePathname === `/teams/${slug}/sales`,
+    },
+    {
+      name: t('receipt-uploads'),
+      href: `/teams/${slug}/receipts`,
+      icon: DocumentTextIcon,
+      active: activePathname === `/teams/${slug}/receipts`,
     },
     {
       name: t('settings'),

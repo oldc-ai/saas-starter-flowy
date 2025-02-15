@@ -84,6 +84,7 @@ model Team {
   apiKeys         ApiKey[]
   inventoryItems  InventoryItem[]
   sales           Sale[]
+  receiptUploads  ReceiptUpload[]
 
   @@index([billingId])
 }
@@ -272,4 +273,24 @@ model SaleItem {
   sale        Sale     @relation(fields: [saleId], references: [id], onDelete: Cascade)
 
   @@index([saleId])
+}
+
+model ReceiptUpload {
+  id          String    @id @default(uuid())
+  teamId      String
+  uploadedBy  String
+  fileName    String
+  fileUrl     String
+  fileType    String    // e.g., IMAGE, PDF
+  status      String    // e.g., PENDING, PROCESSED, FAILED
+  amount      Float?
+  date        DateTime?
+  metadata    Json?     // For storing parsed data
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  team Team @relation(fields: [teamId], references: [id], onDelete: Cascade)
+
+  @@index([teamId])
+  @@index([uploadedBy])
 }
