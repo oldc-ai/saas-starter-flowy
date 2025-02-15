@@ -4,7 +4,7 @@ import env from './env';
 const app = {
   version: packageInfo.version,
   name: 'Flowy',
-  logoUrl: 'https://boxyhq.com/img/logo.png',
+  logoUrl: '/vercel.svg',
   url: env.appUrl,
 };
 
