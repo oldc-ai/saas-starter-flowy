@@ -1,4 +1,4 @@
-import { Cog6ToothIcon, CodeBracketIcon, ChartBarIcon, DocumentTextIcon } from '@heroicons/react/24/outline';
+import { Cog6ToothIcon, ArchiveBoxIcon, ChartBarIcon, DocumentTextIcon } from '@heroicons/react/24/outline';
 import { useTranslation } from 'next-i18next';
 import NavigationItems from './NavigationItems';
 import { NavigationProps, MenuItem } from './NavigationItems';
@@ -15,7 +15,7 @@ const TeamNavigation = ({ slug, activePathname, setSidebarOpen }: NavigationItem
     {
       name: t('all-products'),
       href: `/teams/${slug}/inventory`,
-      icon: CodeBracketIcon,
+      icon: ArchiveBoxIcon ,
       active: activePathname === `/teams/${slug}/inventory`,
     },
     {
