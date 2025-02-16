@@ -79,6 +79,9 @@ async function seedTeams() {
           .replace(/--+/g, '-')
           .replace(/^-+/, '')
           .replace(/-+$/, ''),
+        squareAccessToken: null,
+        squareRefreshToken: null,
+        squareTokenExpiresAt: null,
       },
     });
     newTeams.push(team);

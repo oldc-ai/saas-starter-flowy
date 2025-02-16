@@ -92,7 +92,6 @@ model Team {
   squareTokenExpiresAt DateTime?
 
   @@index([billingId])
-  @@map("teams")
 }
 
 model TeamMember {
