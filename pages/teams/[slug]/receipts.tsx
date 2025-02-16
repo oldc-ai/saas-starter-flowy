@@ -190,7 +190,13 @@ const ReceiptUploads = () => {
                         {receipt.fileType}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
-                        {receipt.status}
+                        <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
+                          ${receipt.status.toLowerCase() === 'accepted' && 'bg-green-100 text-green-800 dark:bg-green-800 dark:text-green-100'}
+                          ${receipt.status.toLowerCase() === 'pending' && 'bg-yellow-100 text-yellow-800 dark:bg-yellow-800 dark:text-yellow-100'}
+                          ${receipt.status.toLowerCase() === 'invalid' && 'bg-red-100 text-red-800 dark:bg-red-800 dark:text-red-100'}
+                        `}>
+                          {receipt.status}
+                        </span>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
                         {new Date(receipt.createdAt).toLocaleDateString()}
