@@ -21,9 +21,6 @@ const nextConfig = {
       },
     ],
   },
-  experimental: {
-    runtime: 'edge',
-  },
   i18n,
   rewrites: async () => {
     return [

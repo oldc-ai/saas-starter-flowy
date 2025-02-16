@@ -92,18 +92,14 @@ const env = {
   darkModeEnabled: process.env.NEXT_PUBLIC_DARK_MODE !== 'false',
 
   teamFeatures: {
-    sso: process.env.FEATURE_TEAM_SSO !== 'false',
-    dsync: process.env.FEATURE_TEAM_DSYNC !== 'false',
-    webhook: process.env.FEATURE_TEAM_WEBHOOK !== 'false',
-    apiKey: process.env.FEATURE_TEAM_API_KEY !== 'false',
-    auditLog: process.env.FEATURE_TEAM_AUDIT_LOG !== 'false',
-    payments:
-      process.env.FEATURE_TEAM_PAYMENTS === 'false'
-        ? false
-        : Boolean(
-            process.env.STRIPE_SECRET_KEY && process.env.STRIPE_WEBHOOK_SECRET
-          ),
-    deleteTeam: process.env.FEATURE_TEAM_DELETION !== 'false',
+    sso: process.env.NEXT_PUBLIC_ENABLE_SSO === 'true',
+    dsync: process.env.NEXT_PUBLIC_ENABLE_DSYNC === 'true',
+    auditLog: process.env.NEXT_PUBLIC_ENABLE_AUDIT_LOG === 'true',
+    webhook: process.env.NEXT_PUBLIC_ENABLE_WEBHOOK === 'true',
+    apiKey: process.env.NEXT_PUBLIC_ENABLE_API_KEY === 'true',
+    payments: process.env.NEXT_PUBLIC_ENABLE_PAYMENTS === 'true',
+    deleteTeam: process.env.NEXT_PUBLIC_ENABLE_DELETE_TEAM === 'true',
+    square: process.env.NEXT_PUBLIC_ENABLE_SQUARE === 'true',
   },
 
   recaptcha: {
@@ -119,6 +115,10 @@ const env = {
     secretKey: process.env.STRIPE_SECRET_KEY,
     webhookSecret: process.env.STRIPE_WEBHOOK_SECRET,
   },
+
+  // Square Integration
+  squareAppId: process.env.SQUARE_APP_ID || '',
+  squareAppSecret: process.env.SQUARE_APP_SECRET || '',
 };
 
 export default env;

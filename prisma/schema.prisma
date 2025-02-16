@@ -86,7 +86,13 @@ model Team {
   sales           Sale[]
   receiptUploads  ReceiptUpload[]
 
+  // Square Integration
+  squareAccessToken    String?
+  squareRefreshToken   String?
+  squareTokenExpiresAt DateTime?
+
   @@index([billingId])
+  @@map("teams")
 }
 
 model TeamMember {

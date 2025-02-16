@@ -6,6 +6,7 @@ import {
   ShieldExclamationIcon,
   UserPlusIcon,
   BanknotesIcon,
+  BuildingStorefrontIcon,
 } from '@heroicons/react/24/outline';
 import type { Team } from '@prisma/client';
 import classNames from 'classnames';
@@ -110,6 +111,17 @@ const TeamTab = ({ activeTab, team, heading, teamFeatures }: TeamTabProps) => {
       href: `/teams/${team.slug}/api-keys`,
       active: activeTab === 'api-keys',
       icon: KeyIcon,
+    });
+  }
+
+  if (
+    canAccess('team_square', ['create', 'update', 'read', 'delete'])
+  ) {
+    navigations.push({
+      name: 'Square Integration',
+      href: `/teams/${team.slug}/square`,
+      active: activeTab === 'square',
+      icon: BuildingStorefrontIcon,
     });
   }
 
