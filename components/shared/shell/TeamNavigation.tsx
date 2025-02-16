@@ -5,9 +5,10 @@ import { NavigationProps, MenuItem } from './NavigationItems';
 
 interface NavigationItemsProps extends NavigationProps {
   slug: string;
+  setSidebarOpen?: (open: boolean) => void;
 }
 
-const TeamNavigation = ({ slug, activePathname }: NavigationItemsProps) => {
+const TeamNavigation = ({ slug, activePathname, setSidebarOpen }: NavigationItemsProps) => {
   const { t } = useTranslation('common');
 
   const menus: MenuItem[] = [
@@ -37,7 +38,7 @@ const TeamNavigation = ({ slug, activePathname }: NavigationItemsProps) => {
     },
   ];
 
-  return <NavigationItems menus={menus} />;
+  return <NavigationItems menus={menus} setSidebarOpen={setSidebarOpen} />;
 };
 
 export default TeamNavigation;

@@ -3,7 +3,11 @@ import { useRouter } from 'next/router';
 import TeamNavigation from './TeamNavigation';
 import UserNavigation from './UserNavigation';
 
-const Navigation = () => {
+interface NavigationProps {
+  setSidebarOpen?: (open: boolean) => void;
+}
+
+const Navigation = ({ setSidebarOpen }: NavigationProps) => {
   const { asPath, isReady, query } = useRouter();
   const [activePathname, setActivePathname] = useState<null | string>(null);
 
@@ -18,9 +22,9 @@ const Navigation = () => {
 
   const Navigation = () => {
     if (slug) {
-      return <TeamNavigation activePathname={activePathname} slug={slug} />;
+      return <TeamNavigation activePathname={activePathname} slug={slug} setSidebarOpen={setSidebarOpen} />;
     } else {
-      return <UserNavigation activePathname={activePathname} />;
+      return <UserNavigation activePathname={activePathname} setSidebarOpen={setSidebarOpen} />;
     }
   };
 

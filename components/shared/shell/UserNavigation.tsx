@@ -7,7 +7,11 @@ import { useTranslation } from 'next-i18next';
 import NavigationItems from './NavigationItems';
 import { MenuItem, NavigationProps } from './NavigationItems';
 
-const UserNavigation = ({ activePathname }: NavigationProps) => {
+interface UserNavigationProps extends NavigationProps {
+  setSidebarOpen?: (open: boolean) => void;
+}
+
+const UserNavigation = ({ activePathname, setSidebarOpen }: UserNavigationProps) => {
   const { t } = useTranslation('common');
 
   const menus: MenuItem[] = [
@@ -31,7 +35,7 @@ const UserNavigation = ({ activePathname }: NavigationProps) => {
     },
   ];
 
-  return <NavigationItems menus={menus} />;
+  return <NavigationItems menus={menus} setSidebarOpen={setSidebarOpen} />;
 };
 
 export default UserNavigation;
