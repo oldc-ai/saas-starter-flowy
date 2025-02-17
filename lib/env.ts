@@ -119,6 +119,7 @@ const env = {
   // Square Integration
   squareAppId: process.env.SQUARE_APP_ID || '',
   squareAppSecret: process.env.SQUARE_APP_SECRET || '',
+  squareUseSandbox: process.env.SQUARE_USE_SANDBOX === 'true',
 };
 
 export default env;

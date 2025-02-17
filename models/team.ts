@@ -6,6 +6,7 @@ import type { NextApiRequest, NextApiResponse } from 'next';
 import { getCurrentUser } from './user';
 import { normalizeUser } from './user';
 import { validateWithSchema, teamSlugSchema } from '@/lib/zod';
+import { ApiError } from '@/lib/errors';
 
 export const createTeam = async (param: {
   userId: string;
@@ -237,11 +238,6 @@ Nested Loop  (cost=0.00..2.04 rows=1 width=159) (actual time=0.088..0.089 rows=1
         Filter: ((id IS NOT NULL) AND (slug = 'boxyhq'::text))
 Planning Time: 1.356 ms
 Execution Time: 0.124 ms
-
-Seq Scan on "User"  (cost=0.00..1.01 rows=1 width=101) (actual time=0.040..0.040 rows=1 loops=1)
-  Filter: (id = '34f3bc0e-e955-400b-892e-395edc6fa727'::text)
-Planning Time: 0.351 ms
-Execution Time: 0.045 ms
 */
 export const getTeamMembers = async (slug: string) => {
   const members = await prisma.teamMember.findMany({
@@ -436,14 +432,26 @@ export const getCurrentUserWithTeam = async (
   res: NextApiResponse
 ) => {
   const user = await getCurrentUser(req, res);
+  
+  if (!user) {
+    throw new ApiError(401, 'You must be logged in to access this resource');
+  }
 
   const { slug } = validateWithSchema(teamSlugSchema, req.query);
+  
+  if (!slug) {
+    throw new ApiError(400, 'Team slug is required');
+  }
 
-  const { role, team } = await getTeamMember(user.id, slug);
+  try {
+    const { role, team } = await getTeamMember(user.id, slug);
 
-  return {
-    ...user,
-    role,
-    team,
-  };
+    return {
+      ...user,
+      role,
+      team,
+    };
+  } catch (error) {
+    throw new ApiError(403, 'You do not have access to this team');
+  }
 };
