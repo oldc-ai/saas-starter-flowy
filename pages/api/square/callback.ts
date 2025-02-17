@@ -27,7 +27,7 @@ export default async function handler(
     try {
       const decodedState = Buffer.from(state, 'base64').toString();
       teamInfo = JSON.parse(decodedState);
-    } catch (error) {
+    } catch {
       return res.status(400).json({ error: 'Invalid state parameter' });
     }
 

@@ -98,7 +98,7 @@ const SquareIntegration = ({ team }: SquareIntegrationProps) => {
               </div>
               <div className="mt-2 max-w-xl text-sm text-gray-500">
                 <p>
-                  Connect your Square account to manage your store's orders, inventory,
+                  Connect your Square account to manage your store&apos;s orders, inventory,
                   and payments directly from this dashboard.
                 </p>
               </div>

@@ -6,6 +6,7 @@ import { useDropzone } from 'react-dropzone';
 import { useRouter } from 'next/router';
 import { getServerSession } from 'next-auth';
 import toast from 'react-hot-toast';
+import Image from 'next/image';
 
 import { getAuthOptions } from '@/lib/nextAuth';
 import { Error, Loading } from '@/components/shared';
@@ -244,10 +245,11 @@ const ReceiptUploads = () => {
                 />
               ) : (
                 <div className="relative w-full h-full">
-                  <img
+                  <Image
                     src={selectedReceipt.fileUrl}
                     alt={selectedReceipt.fileName}
-                    className="object-contain w-full h-full"
+                    fill
+                    className="object-contain"
                   />
                 </div>
               )}
