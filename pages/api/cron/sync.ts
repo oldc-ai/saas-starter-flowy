@@ -1,6 +1,7 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import { prisma } from '@/lib/prisma';
-import { Client } from 'square';
+
+import { SquareClient, SquareEnvironment } from 'square';
 
 // Verify that the request is coming from a cron job
 const verifyCronSecret = (req: NextApiRequest): boolean => {
@@ -20,9 +21,9 @@ async function syncSquareOrders(team: TeamWithSquare) {
     return;
   }
 
-  const squareClient = new Client({
-    accessToken: team.squareAccessToken,
-    environment: process.env.NODE_ENV === 'production' ? 'production' : 'sandbox'
+  const squareClient = new SquareClient({
+    token: team.squareAccessToken,
+    environment: process.env.NODE_ENV === 'production' ? SquareEnvironment.Production : SquareEnvironment.Sandbox
   });
 
   // Find the latest order we've synced for this team
@@ -44,7 +45,7 @@ async function syncSquareOrders(team: TeamWithSquare) {
   try {
     let cursor: string | undefined;
     do {
-      const response = await squareClient.ordersApi.searchOrders({
+      const response = await squareClient.orders.search({
         locationIds: [team.squareLocationId],
         query: {
           filter: {
@@ -61,8 +62,8 @@ async function syncSquareOrders(team: TeamWithSquare) {
         cursor
       });
 
-      if (response.result.orders) {
-        for (const order of response.result.orders) {
+      if (response.orders) {
+        for (const order of response.orders) {
           // Check if this order already exists
           const existingOrder = await prisma.sale.findFirst({
             where: {
@@ -92,7 +93,7 @@ async function syncSquareOrders(team: TeamWithSquare) {
                     quantity: parseInt(item.quantity || '1'),
                     unitPrice: item.basePriceMoney ? parseFloat(item.basePriceMoney.amount?.toString() || '0') / 100 : 0,
                     totalPrice: item.totalMoney ? parseFloat(item.totalMoney.amount?.toString() || '0') / 100 : 0,
-                    category: item.categoryId || null,
+                    category: item.catalogObjectId || null,
                     notes: item.note || null
                   })) || []
                 }
@@ -102,7 +103,7 @@ async function syncSquareOrders(team: TeamWithSquare) {
         }
       }
 
-      cursor = response.result.cursor;
+      cursor = response.cursor;
     } while (cursor);
 
   } catch (error: unknown) {
