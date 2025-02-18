@@ -1,6 +1,5 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import { prisma } from '@/lib/prisma';
-// @ts-ignore
 import { Client } from 'square';
 
 // Verify that the request is coming from a cron job
