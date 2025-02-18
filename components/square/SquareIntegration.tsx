@@ -5,6 +5,16 @@ import { toast } from 'react-hot-toast';
 import { BuildingStorefrontIcon } from '@heroicons/react/24/outline';
 import { useRouter } from 'next/router';
 
+interface Location {
+  id: string;
+  name: string;
+  address: {
+    address_line_1?: string;
+    locality?: string;
+  } | null;
+  isSelected: boolean;
+}
+
 interface SquareIntegrationProps {
   team: Team;
 }
@@ -14,6 +24,10 @@ const SquareIntegration = ({ team }: SquareIntegrationProps) => {
   const [isConnecting, setIsConnecting] = useState(false);
   const [isDisconnecting, setIsDisconnecting] = useState(false);
   const [isConnected, setIsConnected] = useState(false);
+  const [locations, setLocations] = useState<Location[]>([]);
+  const [isLoadingLocations, setIsLoadingLocations] = useState(false);
+  const [selectedLocationId, setSelectedLocationId] = useState<string | null>(null);
+  const [isSavingLocation, setIsSavingLocation] = useState(false);
 
   useEffect(() => {
     // Check for success/error params in URL
@@ -23,18 +37,43 @@ const SquareIntegration = ({ team }: SquareIntegrationProps) => {
       setIsConnected(true);
       toast.success('Successfully connected to Square');
       // Remove the success parameter from URL
-      router.replace(`/teams/${team.slug}/square`, undefined, { shallow: true });
+      router.replace(`/teams/${team.slug}/settings`, undefined, { shallow: true });
     } else if (error) {
       toast.error(decodeURIComponent(error as string));
       // Remove the error parameter from URL
-      router.replace(`/teams/${team.slug}/square`, undefined, { shallow: true });
+      router.replace(`/teams/${team.slug}/settings`, undefined, { shallow: true });
     }
   }, [router.query, team.slug, router]);
 
-  // Check initial connection status
+  // Check initial connection status and load locations if connected
   useEffect(() => {
-    setIsConnected(Boolean(team.squareAccessToken));
-  }, [team.squareAccessToken]);
+    const isSquareConnected = Boolean(team.squareAccessToken);
+    setIsConnected(isSquareConnected);
+    
+    if (isSquareConnected) {
+      fetchLocations();
+    }
+  }, [team.squareAccessToken, team.slug]);
+
+  const fetchLocations = async () => {
+    try {
+      setIsLoadingLocations(true);
+      const response = await fetch(`/api/teams/${team.slug}/square/locations`);
+      const data = await response.json();
+
+      if (data.error) {
+        throw new Error(data.error.message);
+      }
+
+      setLocations(data.data.locations);
+      const selectedLocation = data.data.locations.find((loc: Location) => loc.isSelected);
+      setSelectedLocationId(selectedLocation?.id || null);
+    } catch (error: any) {
+      toast.error(error.message);
+    } finally {
+      setIsLoadingLocations(false);
+    }
+  };
 
   const handleConnect = async () => {
     try {
@@ -72,11 +111,40 @@ const SquareIntegration = ({ team }: SquareIntegrationProps) => {
       }
 
       setIsConnected(false);
+      setLocations([]);
+      setSelectedLocationId(null);
       toast.success('Successfully disconnected from Square');
     } catch (error: any) {
       toast.error(error.message);
     } finally {
       setIsDisconnecting(false);
+    }
+  };
+
+  const handleLocationSelect = async (locationId: string) => {
+    try {
+      setIsSavingLocation(true);
+      const response = await fetch(`/api/teams/${team.slug}/square/location`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ locationId }),
+      });
+
+      const data = await response.json();
+
+      if (data.error) {
+        throw new Error(data.error.message);
+      }
+
+      setSelectedLocationId(locationId);
+      toast.success('Successfully updated Square location');
+      await fetchLocations(); // Refresh locations to update UI
+    } catch (error: any) {
+      toast.error(error.message);
+    } finally {
+      setIsSavingLocation(false);
     }
   };
 
@@ -126,6 +194,61 @@ const SquareIntegration = ({ team }: SquareIntegrationProps) => {
               )}
             </div>
           </div>
+
+          {/* Location Selection */}
+          {isConnected && (
+            <div className="mt-8">
+              <h4 className="text-sm font-medium text-gray-900">Select Store Location</h4>
+              <p className="mt-1 text-sm text-gray-500">
+                Choose which Square location you want to connect to this team.
+              </p>
+              
+              {isLoadingLocations ? (
+                <div className="mt-4 flex justify-center">
+                  <div className="loading loading-spinner loading-md"></div>
+                </div>
+              ) : locations.length > 0 ? (
+                <div className="mt-4 space-y-4">
+                  {locations.map((location) => (
+                    <div
+                      key={location.id}
+                      className={`border rounded-lg p-4 cursor-pointer transition-colors ${
+                        location.id === selectedLocationId
+                          ? 'border-primary bg-primary/5'
+                          : 'border-gray-200 hover:border-primary/50'
+                      }`}
+                      onClick={() => !isSavingLocation && handleLocationSelect(location.id)}
+                    >
+                      <div className="flex items-start">
+                        <input
+                          type="radio"
+                          className="radio radio-primary mt-1"
+                          checked={location.id === selectedLocationId}
+                          onChange={() => !isSavingLocation && handleLocationSelect(location.id)}
+                          disabled={isSavingLocation}
+                        />
+                        <div className="ml-3">
+                          <h4 className="text-sm font-medium text-gray-900">
+                            {location.name}
+                          </h4>
+                          {location.address && (
+                            <p className="text-sm text-gray-500">
+                              {location.address.address_line_1}
+                              {location.address.locality && `, ${location.address.locality}`}
+                            </p>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <p className="mt-4 text-sm text-gray-500">
+                  No locations found in your Square account.
+                </p>
+              )}
+            </div>
+          )}
         </div>
       </div>
     </div>

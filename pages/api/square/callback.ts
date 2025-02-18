@@ -10,32 +10,30 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  // Wrap everything in a try-catch to ensure we always send a valid response
+  if (req.method !== 'GET') {
+    return res.status(405).json({ error: 'Method not allowed' });
+  }
+
+  const { code, state } = req.query;
+
+  if (!code || !state || typeof code !== 'string' || typeof state !== 'string') {
+    return res.status(400).json({ error: 'Missing required parameters' });
+  }
+
+  // Decode and parse the state parameter
+  let teamId: string = '';
+  let teamSlug: string = '';
+  
   try {
-    if (req.method !== 'GET') {
-      return res.status(405).json({ error: 'Method not allowed' });
-    }
-
-    const { code, state } = req.query;
-
-    if (!code || !state || typeof code !== 'string' || typeof state !== 'string') {
-      return res.status(400).json({ error: 'Missing required parameters' });
-    }
-
-    // Decode and parse the state parameter
-    let teamInfo;
-    try {
-      const decodedState = Buffer.from(state, 'base64').toString();
-      teamInfo = JSON.parse(decodedState);
-    } catch {
-      return res.status(400).json({ error: 'Invalid state parameter' });
-    }
-
-    const { teamId, teamSlug } = teamInfo;
-
-    if (!teamId || !teamSlug) {
+    const decodedState = Buffer.from(state, 'base64').toString();
+    const teamInfo = JSON.parse(decodedState);
+    
+    if (!teamInfo.teamId || !teamInfo.teamSlug) {
       return res.status(400).json({ error: 'Invalid team information in state' });
     }
+    
+    teamId = teamInfo.teamId;
+    teamSlug = teamInfo.teamSlug;
 
     // Exchange the authorization code for an access token
     const response = await fetch(SQUARE_TOKEN_URL, {
@@ -77,12 +75,14 @@ export default async function handler(
       },
     });
 
-    // Redirect back to the team settings page
-    const redirectUrl = `${env.appUrl}/teams/${teamSlug}/settings`;
+    // Redirect back to the settings page with success parameter
+    const redirectUrl = `${env.appUrl}/teams/${teamSlug}/settings?success=true`;
     return res.redirect(302, redirectUrl);
   } catch (error) {
     console.error('Unexpected error in Square callback:', error);
-    // Always return a valid response object
-    return res.status(500).json({ error: 'Internal server error' });
+    // Redirect back with error message
+    const errorMessage = encodeURIComponent((error as Error)?.message || 'Internal server error');
+    const redirectUrl = `${env.appUrl}/teams/${teamSlug || ''}/settings?error=${errorMessage}`;
+    return res.redirect(302, redirectUrl);
   }
 } 
