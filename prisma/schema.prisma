@@ -85,6 +85,7 @@ model Team {
   inventoryItems  InventoryItem[]
   sales           Sale[]
   receiptUploads  ReceiptUpload[]
+  inventorySnapshots InventorySnapshot[]
 
   // Square Integration
   squareAccessToken    String?
@@ -238,10 +239,27 @@ model InventoryItem {
   updatedAt DateTime @updatedAt
 
   team   Team @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  snapshots InventorySnapshot[]
 
   @@unique([teamId, name])
   @@index([teamId])
   @@index([updatedBy])
+}
+
+model InventorySnapshot {
+  id              String        @id @default(uuid())
+  inventoryItemId String
+  teamId          String
+  value           Float
+  snapshotDate    DateTime
+  createdAt       DateTime      @default(now())
+
+  team          Team          @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  inventoryItem InventoryItem @relation(fields: [inventoryItemId], references: [id], onDelete: Cascade)
+
+  @@index([teamId])
+  @@index([inventoryItemId])
+  @@index([snapshotDate])
 }
 
 model Sale {
