@@ -1,7 +1,7 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import { prisma } from '@/lib/prisma';
-
-const { Client, ApiError } = require('square');
+// @ts-ignore
+import { Client } from 'square';
 
 // Verify that the request is coming from a cron job
 const verifyCronSecret = (req: NextApiRequest): boolean => {
