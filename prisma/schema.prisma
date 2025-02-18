@@ -91,6 +91,7 @@ model Team {
   squareAccessToken    String?
   squareRefreshToken   String?
   squareTokenExpiresAt DateTime?
+  squareLocationId     String?
 
   @@index([billingId])
 }
