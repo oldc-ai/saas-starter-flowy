@@ -13,6 +13,7 @@ import classNames from 'classnames';
 import useCanAccess from 'hooks/useCanAccess';
 import Link from 'next/link';
 import { TeamFeature } from 'types';
+import { useRouter } from 'next/router';
 
 interface TeamTabProps {
   activeTab: string;
@@ -23,106 +24,110 @@ interface TeamTabProps {
 
 const TeamTab = ({ activeTab, team, heading, teamFeatures }: TeamTabProps) => {
   const { canAccess } = useCanAccess();
+  const router = useRouter();
+  const { onboarding } = router.query;
 
   const navigations = [
-    {
+    ...(onboarding === 'true' ? [] : [{
       name: 'Settings',
       href: `/teams/${team.slug}/settings`,
       active: activeTab === 'settings',
       icon: Cog6ToothIcon,
-    },
+    }]),
   ];
 
-  if (canAccess('team_member', ['create', 'update', 'read', 'delete'])) {
-    navigations.push({
-      name: 'Members',
-      href: `/teams/${team.slug}/members`,
-      active: activeTab === 'members',
-      icon: UserPlusIcon,
-    });
-  }
-
-  if (
-    teamFeatures.sso &&
-    canAccess('team_sso', ['create', 'update', 'read', 'delete'])
-  ) {
-    navigations.push({
-      name: 'Single Sign-On',
-      href: `/teams/${team.slug}/sso`,
-      active: activeTab === 'sso',
-      icon: ShieldExclamationIcon,
-    });
-  }
-
-  if (
-    teamFeatures.dsync &&
-    canAccess('team_dsync', ['create', 'update', 'read', 'delete'])
-  ) {
-    navigations.push({
-      name: 'Directory Sync',
-      href: `/teams/${team.slug}/directory-sync`,
-      active: activeTab === 'directory-sync',
-      icon: UserPlusIcon,
-    });
-  }
-
-  if (
-    teamFeatures.auditLog &&
-    canAccess('team_audit_log', ['create', 'update', 'read', 'delete'])
-  ) {
-    navigations.push({
-      name: 'Audit Logs',
-      href: `/teams/${team.slug}/audit-logs`,
-      active: activeTab === 'audit-logs',
-      icon: DocumentMagnifyingGlassIcon,
-    });
-  }
-
-  if (
-    teamFeatures.payments &&
-    canAccess('team_payments', ['create', 'update', 'read', 'delete'])
-  ) {
-    navigations.push({
-      name: 'Billing',
-      href: `/teams/${team.slug}/billing`,
-      active: activeTab === 'payments',
-      icon: BanknotesIcon,
-    });
-  }
-
-  if (
-    teamFeatures.webhook &&
-    canAccess('team_webhook', ['create', 'update', 'read', 'delete'])
-  ) {
-    navigations.push({
-      name: 'Webhooks',
-      href: `/teams/${team.slug}/webhooks`,
-      active: activeTab === 'webhooks',
-      icon: PaperAirplaneIcon,
-    });
-  }
-
-  if (
-    teamFeatures.apiKey &&
-    canAccess('team_api_key', ['create', 'update', 'read', 'delete'])
-  ) {
-    navigations.push({
-      name: 'API Keys',
-      href: `/teams/${team.slug}/api-keys`,
-      active: activeTab === 'api-keys',
-      icon: KeyIcon,
-    });
-  }
-
-  if (
-    canAccess('team_square', ['create', 'update', 'read', 'delete'])
-  ) {
+  // Only show Square integration first during onboarding
+  if (canAccess('team_square', ['create', 'update', 'read', 'delete'])) {
     navigations.push({
       name: 'Square Integration',
-      href: `/teams/${team.slug}/square`,
+      href: `/teams/${team.slug}/square${onboarding === 'true' ? '?onboarding=true' : ''}`,
       active: activeTab === 'square',
       icon: BuildingStorefrontIcon,
     });
+  }
+
+  // Hide other navigation items during onboarding
+  if (onboarding !== 'true') {
+    if (canAccess('team_member', ['create', 'update', 'read', 'delete'])) {
+      navigations.push({
+        name: 'Members',
+        href: `/teams/${team.slug}/members`,
+        active: activeTab === 'members',
+        icon: UserPlusIcon,
+      });
+    }
+
+    if (
+      teamFeatures.sso &&
+      canAccess('team_sso', ['create', 'update', 'read', 'delete'])
+    ) {
+      navigations.push({
+        name: 'Single Sign-On',
+        href: `/teams/${team.slug}/sso`,
+        active: activeTab === 'sso',
+        icon: ShieldExclamationIcon,
+      });
+    }
+
+    if (
+      teamFeatures.dsync &&
+      canAccess('team_dsync', ['create', 'update', 'read', 'delete'])
+    ) {
+      navigations.push({
+        name: 'Directory Sync',
+        href: `/teams/${team.slug}/directory-sync`,
+        active: activeTab === 'directory-sync',
+        icon: UserPlusIcon,
+      });
+    }
+
+    if (
+      teamFeatures.auditLog &&
+      canAccess('team_audit_log', ['create', 'update', 'read', 'delete'])
+    ) {
+      navigations.push({
+        name: 'Audit Logs',
+        href: `/teams/${team.slug}/audit-logs`,
+        active: activeTab === 'audit-logs',
+        icon: DocumentMagnifyingGlassIcon,
+      });
+    }
+
+    if (
+      teamFeatures.payments &&
+      canAccess('team_payments', ['create', 'update', 'read', 'delete'])
+    ) {
+      navigations.push({
+        name: 'Billing',
+        href: `/teams/${team.slug}/billing`,
+        active: activeTab === 'payments',
+        icon: BanknotesIcon,
+      });
+    }
+
+    if (
+      teamFeatures.webhook &&
+      canAccess('team_webhook', ['create', 'update', 'read', 'delete'])
+    ) {
+      navigations.push({
+        name: 'Webhooks',
+        href: `/teams/${team.slug}/webhooks`,
+        active: activeTab === 'webhooks',
+        icon: PaperAirplaneIcon,
+      });
+    }
+
+    if (
+      teamFeatures.apiKey &&
+      canAccess('team_api_key', ['create', 'update', 'read', 'delete'])
+    ) {
+      navigations.push({
+        name: 'API Keys',
+        href: `/teams/${team.slug}/api-keys`,
+        active: activeTab === 'api-keys',
+        icon: KeyIcon,
+      });
+    }
   }
 
   return (
@@ -131,7 +136,7 @@ const TeamTab = ({ activeTab, team, heading, teamFeatures }: TeamTabProps) => {
         {heading ? heading : team.name}
       </h2>
       <nav
-        className=" flex flex-wrap border-b border-gray-300"
+        className="flex flex-wrap border-b border-gray-300"
         aria-label="Tabs"
       >
         {navigations.map((menu) => {
@@ -146,6 +151,7 @@ const TeamTab = ({ activeTab, team, heading, teamFeatures }: TeamTabProps) => {
                   : 'border-transparent text-gray-500 hover:border-gray-300  hover:text-gray-700 hover:dark:text-gray-100'
               )}
             >
+              <menu.icon className="h-4 w-4 mr-2" />
               {menu.name}
             </Link>
           );

@@ -47,20 +47,22 @@ const CreateTeam = ({ visible, setVisible }: CreateTeamProps) => {
       mutateTeams();
       setVisible(false);
       toast.success(t('team-created'));
-      router.push(`/teams/${json.data.slug}/settings`);
+      // Redirect to inventory page with onboarding=true parameter to highlight the upload button
+      router.push(`/teams/${json.data.slug}/inventory?onboarding=true`);
     },
   });
 
   const onClose = () => {
     setVisible(false);
-    router.push(`/teams`);
   };
 
   return (
     <Modal open={visible} close={onClose}>
       <form onSubmit={formik.handleSubmit} method="POST">
         <Modal.Header>{t('create-team')}</Modal.Header>
-        <Modal.Description>{t('members-of-a-team')}</Modal.Description>
+        <Modal.Description>
+          {t('members-of-a-team')} After creating your team, you'll be guided to upload your inventory data.
+        </Modal.Description>
         <Modal.Body>
           <InputWithLabel
             label={t('name')}

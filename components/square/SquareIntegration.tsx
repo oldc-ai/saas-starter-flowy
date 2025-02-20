@@ -17,9 +17,10 @@ interface Location {
 
 interface SquareIntegrationProps {
   team: Team;
+  onLocationSelect?: (locationId: string) => void;
 }
 
-const SquareIntegration = ({ team }: SquareIntegrationProps) => {
+const SquareIntegration = ({ team, onLocationSelect }: SquareIntegrationProps) => {
   const router = useRouter();
   const [isConnecting, setIsConnecting] = useState(false);
   const [isDisconnecting, setIsDisconnecting] = useState(false);
@@ -31,17 +32,25 @@ const SquareIntegration = ({ team }: SquareIntegrationProps) => {
 
   useEffect(() => {
     // Check for success/error params in URL
-    const { success, error } = router.query;
+    const { success, error, setup } = router.query;
     
     if (success === 'true') {
       setIsConnected(true);
       toast.success('Successfully connected to Square');
-      // Remove the success parameter from URL
-      router.replace(`/teams/${team.slug}/settings`, undefined, { shallow: true });
+      // Remove the success parameter from URL but keep setup if it exists
+      router.replace(
+        `/teams/${team.slug}/settings${setup ? '?setup=true' : ''}`,
+        undefined,
+        { shallow: true }
+      );
     } else if (error) {
       toast.error(decodeURIComponent(error as string));
-      // Remove the error parameter from URL
-      router.replace(`/teams/${team.slug}/settings`, undefined, { shallow: true });
+      // Remove the error parameter from URL but keep setup if it exists
+      router.replace(
+        `/teams/${team.slug}/settings${setup ? '?setup=true' : ''}`,
+        undefined,
+        { shallow: true }
+      );
     }
   }, [router.query, team.slug, router]);
 
@@ -139,6 +148,9 @@ const SquareIntegration = ({ team }: SquareIntegrationProps) => {
       }
 
       setSelectedLocationId(locationId);
+      if (onLocationSelect) {
+        onLocationSelect(locationId);
+      }
       toast.success('Successfully updated Square location');
       await fetchLocations(); // Refresh locations to update UI
     } catch (error: any) {
@@ -151,7 +163,7 @@ const SquareIntegration = ({ team }: SquareIntegrationProps) => {
   return (
     <div className="space-y-6 max-w-7xl">
       <div className="bg-white shadow sm:rounded-lg">
-        <div className="px-4 py-5 sm:p-6">
+        <div className="px-4 py-5 sm:p-6">prisma.team
           <div className="sm:flex sm:items-start sm:justify-between">
             <div>
               <div className="flex items-center">

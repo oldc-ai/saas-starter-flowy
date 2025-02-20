@@ -7,10 +7,21 @@ import type { GetServerSidePropsContext } from 'next';
 import env from '@/lib/env';
 import type { TeamFeature } from 'types';
 import { SquareIntegration } from '@/components/square';
+import { useRouter } from 'next/router';
+import { useEffect, useState } from 'react';
 
 const SquarePage = ({ teamFeatures }: { teamFeatures: TeamFeature }) => {
   const { t } = useTranslation('common');
+  const router = useRouter();
+  const { onboarding } = router.query;
+  const [showConnectHint, setShowConnectHint] = useState(false);
   const { isLoading, isError, team } = useTeam();
+
+  useEffect(() => {
+    if (onboarding === 'true') {
+      setShowConnectHint(true);
+    }
+  }, [onboarding]);
 
   if (isLoading) {
     return <Loading />;
@@ -27,7 +38,7 @@ const SquarePage = ({ teamFeatures }: { teamFeatures: TeamFeature }) => {
   return (
     <>
       <TeamTab activeTab="square" team={team} teamFeatures={teamFeatures} />
-      <SquareIntegration team={team} />
+      <SquareIntegration team={team} showConnectHint={showConnectHint} />
     </>
   );
 };
