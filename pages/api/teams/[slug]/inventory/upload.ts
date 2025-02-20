@@ -105,7 +105,7 @@ export default async function handler(
       },
     });
   } catch (error: any) {
-    console.error('Error in inventory upload:', error);
+    console.error('Error in inventory upload:', error.message);
     res.status(error.statusCode || 500).json({
       error: {
         message: error.message || 'Internal server error',
