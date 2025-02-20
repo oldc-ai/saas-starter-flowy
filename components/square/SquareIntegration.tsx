@@ -18,9 +18,10 @@ interface Location {
 interface SquareIntegrationProps {
   team: Team;
   onLocationSelect?: (locationId: string) => void;
+  showConnectHint?: boolean;
 }
 
-const SquareIntegration = ({ team, onLocationSelect }: SquareIntegrationProps) => {
+const SquareIntegration = ({ team, onLocationSelect, showConnectHint }: SquareIntegrationProps) => {
   const router = useRouter();
   const [isConnecting, setIsConnecting] = useState(false);
   const [isDisconnecting, setIsDisconnecting] = useState(false);
@@ -163,7 +164,7 @@ const SquareIntegration = ({ team, onLocationSelect }: SquareIntegrationProps) =
   return (
     <div className="space-y-6 max-w-7xl">
       <div className="bg-white shadow sm:rounded-lg">
-        <div className="px-4 py-5 sm:p-6">prisma.team
+        <div className="px-4 py-5 sm:p-6">
           <div className="sm:flex sm:items-start sm:justify-between">
             <div>
               <div className="flex items-center">
@@ -183,17 +184,33 @@ const SquareIntegration = ({ team, onLocationSelect }: SquareIntegrationProps) =
                 </p>
               </div>
             </div>
-            <div className="mt-5 sm:mt-0 sm:ml-6 sm:flex sm:flex-shrink-0 sm:items-center">
+            <div className="mt-5 sm:mt-0 sm:ml-6 sm:flex sm:flex-shrink-0 sm:items-center relative">
               {!isConnected ? (
-                <Button
-                  color="primary"
-                  loading={isConnecting}
-                  startIcon={<BuildingStorefrontIcon className="h-5 w-5" />}
-                  onClick={handleConnect}
-                  size="md"
-                >
-                  Connect Square Account
-                </Button>
+                <>
+                  <Button
+                    color="primary"
+                    loading={isConnecting}
+                    startIcon={<BuildingStorefrontIcon className="h-5 w-5" />}
+                    onClick={handleConnect}
+                    size="md"
+                    className={showConnectHint ? 'relative z-50' : ''}
+                  >
+                    Connect Square Account
+                  </Button>
+                  {showConnectHint && (
+                    <>
+                      <div className="fixed inset-0 bg-gray-500/20 z-40" onClick={() => router.replace(`/teams/${team.slug}/square`, undefined, { shallow: true })} />
+                      <div className="absolute z-50 left-1/2 transform -translate-x-1/2 mt-2 w-[280px] top-full">
+                        <div className="bg-white text-gray-700 p-4 rounded-lg shadow-lg relative">
+                          <p className="text-sm">
+                            Connect your Square account to sync your inventory with your Square store.
+                          </p>
+                          <div className="absolute w-4 h-4 bg-white transform rotate-45 -top-2 left-1/2 -ml-2" />
+                        </div>
+                      </div>
+                    </>
+                  )}
+                </>
               ) : (
                 <Button
                   color="error"
