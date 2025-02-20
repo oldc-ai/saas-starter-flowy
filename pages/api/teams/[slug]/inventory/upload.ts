@@ -33,7 +33,7 @@ export default async function handler(
 
     // Parse the multipart form data
     const form = formidable();
-    const [fields, files] = await new Promise<[formidable.Fields, formidable.Files]>((resolve, reject) => {
+    const [, files] = await new Promise<[formidable.Fields, formidable.Files]>((resolve, reject) => {
       form.parse(req, (err, fields, files) => {
         if (err) reject(err);
         resolve([fields, files]);

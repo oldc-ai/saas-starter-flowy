@@ -117,11 +117,9 @@ const Inventory = () => {
     if (tooltipRef.current && uploadButtonRef.current) {
       const tooltipRect = tooltipRef.current.getBoundingClientRect();
       const buttonRect = uploadButtonRef.current.getBoundingClientRect();
-      const windowHeight = window.innerHeight;
       
       // Only move to top if there's definitely enough space
       const spaceAbove = buttonRect.top;
-      const spaceBelow = windowHeight - buttonRect.bottom;
       
       if (spaceAbove > tooltipRect.height + 40) { // Extra buffer
         setTooltipPosition('top');

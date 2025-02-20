@@ -61,7 +61,7 @@ const CreateTeam = ({ visible, setVisible }: CreateTeamProps) => {
       <form onSubmit={formik.handleSubmit} method="POST">
         <Modal.Header>{t('create-team')}</Modal.Header>
         <Modal.Description>
-          {t('members-of-a-team')} After creating your team, you'll be guided to upload your inventory data.
+          {t('members-of-a-team')} After creating your team, you&apos;ll be guided to upload your inventory data.
         </Modal.Description>
         <Modal.Body>
           <InputWithLabel
