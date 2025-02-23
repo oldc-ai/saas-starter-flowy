@@ -40,7 +40,7 @@ const SquareIntegration = ({ team, onLocationSelect, showConnectHint }: SquareIn
       toast.success('Successfully connected to Square');
       // Remove the success parameter from URL but keep setup if it exists
       router.replace(
-        `/teams/${team.slug}/settings${setup ? '?setup=true' : ''}`,
+        `/teams/${team.slug}/square${setup ? '?setup=true' : ''}`,
         undefined,
         { shallow: true }
       );
