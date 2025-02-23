@@ -30,17 +30,18 @@ const SquareIntegration = ({ team, onLocationSelect, showConnectHint }: SquareIn
   const [isLoadingLocations, setIsLoadingLocations] = useState(false);
   const [selectedLocationId, setSelectedLocationId] = useState<string | null>(null);
   const [isSavingLocation, setIsSavingLocation] = useState(false);
+  const [showLocationHint, setShowLocationHint] = useState(false);
 
   useEffect(() => {
     // Check for success/error params in URL
-    const { success, error, setup } = router.query;
+    const { success, error, setup, select_location } = router.query;
     
     if (success === 'true') {
       setIsConnected(true);
       toast.success('Successfully connected to Square');
-      // Remove the success parameter from URL but keep setup if it exists
+      // Remove the success parameter from URL but keep setup if it exists and add select_location param
       router.replace(
-        `/teams/${team.slug}/square${setup ? '?setup=true' : ''}`,
+        `/teams/${team.slug}/square${setup ? '?setup=true&' : '?'}select_location=true`,
         undefined,
         { shallow: true }
       );
@@ -48,11 +49,14 @@ const SquareIntegration = ({ team, onLocationSelect, showConnectHint }: SquareIn
       toast.error(decodeURIComponent(error as string));
       // Remove the error parameter from URL but keep setup if it exists
       router.replace(
-        `/teams/${team.slug}/settings${setup ? '?setup=true' : ''}`,
+        `/teams/${team.slug}/square${setup ? '?setup=true' : ''}`,
         undefined,
         { shallow: true }
       );
     }
+
+    // Set location hint based on query param
+    setShowLocationHint(select_location === 'true');
   }, [router.query, team.slug, router]);
 
   // Check initial connection status and load locations if connected
@@ -226,11 +230,30 @@ const SquareIntegration = ({ team, onLocationSelect, showConnectHint }: SquareIn
 
           {/* Location Selection */}
           {isConnected && (
-            <div className="mt-8">
+            <div className={`mt-8 ${showLocationHint ? 'relative z-50' : ''}`}>
               <h4 className="text-sm font-medium text-gray-900">Select Store Location</h4>
               <p className="mt-1 text-sm text-gray-500">
                 Choose which Square location you want to connect to this team.
+                {selectedLocationId && (
+                  <span className="text-amber-600 ml-1">
+                    Note: Location cannot be changed once selected to maintain data integrity.
+                  </span>
+                )}
               </p>
+              
+              {showLocationHint && !selectedLocationId && (
+                <>
+                  <div className="fixed inset-0 bg-gray-500/20 z-40" onClick={() => router.replace(`/teams/${team.slug}/square`, undefined, { shallow: true })} />
+                  <div className="absolute z-50 right-0 mt-2 w-[280px]">
+                    <div className="bg-white text-gray-700 p-4 rounded-lg shadow-lg relative">
+                      <p className="text-sm">
+                        Please select a store location to complete the Square integration setup.
+                      </p>
+                      <div className="absolute w-4 h-4 bg-white transform rotate-45 -top-2 right-4" />
+                    </div>
+                  </div>
+                </>
+              )}
               
               {isLoadingLocations ? (
                 <div className="mt-4 flex justify-center">
@@ -238,38 +261,45 @@ const SquareIntegration = ({ team, onLocationSelect, showConnectHint }: SquareIn
                 </div>
               ) : locations.length > 0 ? (
                 <div className="mt-4 space-y-4">
-                  {locations.map((location) => (
-                    <div
-                      key={location.id}
-                      className={`border rounded-lg p-4 cursor-pointer transition-colors ${
-                        location.id === selectedLocationId
-                          ? 'border-primary bg-primary/5'
-                          : 'border-gray-200 hover:border-primary/50'
-                      }`}
-                      onClick={() => !isSavingLocation && handleLocationSelect(location.id)}
-                    >
-                      <div className="flex items-start">
-                        <input
-                          type="radio"
-                          className="radio radio-primary mt-1"
-                          checked={location.id === selectedLocationId}
-                          onChange={() => !isSavingLocation && handleLocationSelect(location.id)}
-                          disabled={isSavingLocation}
-                        />
-                        <div className="ml-3">
-                          <h4 className="text-sm font-medium text-gray-900">
-                            {location.name}
-                          </h4>
-                          {location.address && (
-                            <p className="text-sm text-gray-500">
-                              {location.address.address_line_1}
-                              {location.address.locality && `, ${location.address.locality}`}
-                            </p>
-                          )}
+                  {locations.map((location) => {
+                    const isSelected = location.id === selectedLocationId;
+                    const isDisabled = Boolean(selectedLocationId) && !isSelected;
+                    
+                    return (
+                      <div
+                        key={location.id}
+                        className={`border rounded-lg p-4 transition-colors ${
+                          isSelected
+                            ? 'border-primary bg-primary/5'
+                            : isDisabled
+                            ? 'border-gray-200 opacity-50 cursor-not-allowed'
+                            : 'border-gray-200 hover:border-primary/50 cursor-pointer'
+                        }`}
+                        onClick={() => !isSavingLocation && !isDisabled && handleLocationSelect(location.id)}
+                      >
+                        <div className="flex items-start">
+                          <input
+                            type="radio"
+                            className="radio radio-primary mt-1"
+                            checked={isSelected}
+                            onChange={() => !isSavingLocation && !isDisabled && handleLocationSelect(location.id)}
+                            disabled={isSavingLocation || isDisabled}
+                          />
+                          <div className="ml-3">
+                            <h4 className="text-sm font-medium text-gray-900">
+                              {location.name}
+                            </h4>
+                            {location.address && (
+                              <p className="text-sm text-gray-500">
+                                {location.address.address_line_1}
+                                {location.address.locality && `, ${location.address.locality}`}
+                              </p>
+                            )}
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  ))}
+                    );
+                  })}
                 </div>
               ) : (
                 <p className="mt-4 text-sm text-gray-500">
