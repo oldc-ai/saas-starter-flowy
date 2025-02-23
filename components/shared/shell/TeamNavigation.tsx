@@ -32,9 +32,9 @@ const TeamNavigation = ({ slug, activePathname, setSidebarOpen }: NavigationItem
     },
     {
       name: t('settings'),
-      href: `/teams/${slug}/settings`,
+      href: `/teams/${slug}/square`,
       icon: Cog6ToothIcon,
-      active: activePathname === `/teams/${slug}/settings`,
+      active: ['/settings', '/square', '/members'].some(path => activePathname === `/teams/${slug}${path}`),
     },
   ];
 

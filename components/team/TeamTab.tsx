@@ -14,6 +14,7 @@ import useCanAccess from 'hooks/useCanAccess';
 import Link from 'next/link';
 import { TeamFeature } from 'types';
 import { useRouter } from 'next/router';
+import { ForwardRefExoticComponent, SVGProps, RefAttributes } from 'react';
 
 interface TeamTabProps {
   activeTab: string;
@@ -27,22 +28,32 @@ const TeamTab = ({ activeTab, team, heading, teamFeatures }: TeamTabProps) => {
   const router = useRouter();
   const { onboarding } = router.query;
 
-  const navigations = [
-    ...(onboarding === 'true' ? [] : [{
-      name: 'Settings',
-      href: `/teams/${team.slug}/settings`,
-      active: activeTab === 'settings',
-      icon: Cog6ToothIcon,
-    }]),
-  ];
+  type Navigation = {
+    name: string;
+    href: string;
+    active: boolean;
+    icon: ForwardRefExoticComponent<Omit<SVGProps<SVGSVGElement>, "ref"> & { title?: string; titleId?: string; } & RefAttributes<SVGSVGElement>>;
+  };
 
-  // Only show Square integration first during onboarding
+  const navigations: Navigation[] = [];
+
+  // Always show Square integration first
   if (canAccess('team_square', ['create', 'update', 'read', 'delete'])) {
     navigations.push({
       name: 'Square Integration',
       href: `/teams/${team.slug}/square${onboarding === 'true' ? '?onboarding=true' : ''}`,
       active: activeTab === 'square',
       icon: BuildingStorefrontIcon,
+    });
+  }
+
+  // Add settings tab if not in onboarding
+  if (onboarding !== 'true') {
+    navigations.push({
+      name: 'Settings',
+      href: `/teams/${team.slug}/settings`,
+      active: activeTab === 'settings',
+      icon: Cog6ToothIcon,
     });
   }
 
