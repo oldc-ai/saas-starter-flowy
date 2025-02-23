@@ -76,13 +76,13 @@ export default async function handler(
     });
 
     // Redirect back to the settings page with success parameter
-    const redirectUrl = `${env.appUrl}/teams/${teamSlug}/settings?success=true`;
+    const redirectUrl = `${env.appUrl}/teams/${teamSlug}/square?success=true`;
     return res.redirect(302, redirectUrl);
   } catch (error) {
     console.error('Unexpected error in Square callback:', error);
     // Redirect back with error message
     const errorMessage = encodeURIComponent((error as Error)?.message || 'Internal server error');
-    const redirectUrl = `${env.appUrl}/teams/${teamSlug || ''}/settings?error=${errorMessage}`;
+    const redirectUrl = `${env.appUrl}/teams/${teamSlug || ''}/square?error=${errorMessage}`;
     return res.redirect(302, redirectUrl);
   }
 } 
